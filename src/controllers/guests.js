@@ -1,0 +1,112 @@
+const { response } = require('express');
+const { GuestSchema } = require('../models');
+
+const cloudinary = require('cloudinary').v2
+cloudinary.config(process.env.CLOUDINARY_URL);
+
+const getGuests = async (req, res = response) => {
+
+    const invitados = await GuestSchema.find();
+
+    res.json({
+        ok: true,
+        invitados
+    });
+}
+
+const createGuest = async (req, res = response) => {
+
+    const invitado = new GuestSchema(req.body);
+
+    try {
+        invitado.user = req.uid;
+        //agregar ubicación de la imagen
+        const { tempFilePath } = req.files.archivo
+        const { secure_url } = await cloudinary.uploader.upload(tempFilePath, { folder: 'guests' });
+        //modificamos y damos acceso al usuario
+        invitado.image = secure_url;
+
+        const invitadoGuardado = await invitado.save();
+
+        res.json({
+            ok: true,
+            invitado: invitadoGuardado
+        })
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({
+            ok: false,
+            msg: 'Hable con el administrador'
+        });
+    }
+}
+
+const updateGuest = async (req, res = response) => {
+
+    const guestId = req.params.id;
+
+    try {
+
+        const nuevoGuest = {
+            ...req.body
+        }
+        if (req.files != null) {
+
+            //agregar ubicación de la imagen
+            const { tempFilePath } = req.files.archivo
+            const { secure_url } = await cloudinary.uploader.upload(tempFilePath, { folder: 'icons' });
+            //modificamos y damos acceso al usuario
+            nuevoGuest.image = secure_url;
+        }
+        const guestActualizado = await GuestSchema.findByIdAndUpdate(guestId, nuevoGuest, { new: true },);
+
+
+        res.json({
+            ok: true,
+            invitado: guestActualizado
+        });
+
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            ok: false,
+            msg: 'Hable con el administrador'
+        });
+    }
+
+}
+const deleteGuest = async (req, res = response) => {
+
+    const guestId = req.params.id;
+
+    try {
+
+        const nuevoGuest = {
+            ...req.body
+        }
+
+        const guestActualizado = await GuestSchema.findByIdAndUpdate(guestId, nuevoGuest, { new: true },);
+
+        res.json({
+            ok: true,
+            invitado: guestActualizado
+        });
+
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            ok: false,
+            msg: 'Hable con el administrador'
+        });
+    }
+
+}
+module.exports = {
+    getGuests,
+    createGuest,
+    updateGuest,
+    deleteGuest,
+}
