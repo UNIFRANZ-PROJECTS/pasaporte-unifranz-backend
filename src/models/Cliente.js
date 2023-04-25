@@ -36,6 +36,10 @@ const ClienteSchema = Schema({
         required: [true, 'el correo es obligatorio'],
         unique: true
     },
+    online: {
+        type: Boolean,
+        default: false
+    },
 });
 
 ClienteSchema.method('toJSON', function () {

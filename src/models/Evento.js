@@ -75,12 +75,17 @@ const EventoSchema = Schema({
         type: String,
         default: "proximo"
     },
+    messageIds: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'Mensaje',
+            required: true
+        }
+    ],
     state: {
         type: Boolean,
         default: true
     },
-
-
 });
 
 EventoSchema.method('toJSON', function () {
@@ -108,6 +113,17 @@ EventoSchema.method('toJSON', function () {
         delete e._id;
         delete e.__v;
     });
+    if (object.messageIds) {
+        object.messageIds.forEach(e => {
+            console.log(e._id)
+            if (e._id && !e.id) { // se agrega esta comprobación para evitar una llamada recursiva infinita
+                e.id = e._id;
+                delete e._id;
+                delete e.__v;
+            }
+        });
+    }
+
 
     // object.guestIds = object.guestIds
     return object;

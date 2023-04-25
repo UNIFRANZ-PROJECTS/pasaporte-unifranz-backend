@@ -92,7 +92,7 @@ const getDocumentByFilter = async (req, res = response) => {
             categoryIds: evento.categoryIds.map((e) => e.title).join(", "),
             careerIds: evento.careerIds.map((e) => `${e.abbreviation}-${e.campus}`).join(", "),
             guestIds: evento.guestIds.map((e) => `${e.first_name} ${e.last_name}`).join(", "),
-            studentIds: evento.studentIds.map((e) => e.codigo).join(", "),
+            studentIds: evento.studentIds.length,
             image: evento.image,
             description: evento.description,
             start: evento.start,

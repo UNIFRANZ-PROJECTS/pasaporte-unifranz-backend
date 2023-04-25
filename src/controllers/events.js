@@ -96,6 +96,18 @@ const getEventsByCampus = async (req, res = response) => {
             });
     }
 }
+const getChatByEvent = async (req, res = response) => {
+    const evento = await EventoSchema.findById(req.params.id)
+        .populate({
+            path: 'messageIds',
+            populate: {
+                path: 'client'
+            },
+        });
+    res.json({
+        chat: evento.messageIds
+    })
+}
 const getReportStudentsByEvent = async (req, res = response) => {
 
     const eventoId = req.params.id
@@ -255,6 +267,7 @@ const deleteEvent = async (req, res = response) => {
 module.exports = {
     getEvents,
     getEventsByCampus,
+    getChatByEvent,
     getReportStudentsByEvent,
     createEvent,
     updateEvent,

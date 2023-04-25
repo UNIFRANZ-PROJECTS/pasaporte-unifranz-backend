@@ -10,6 +10,7 @@ const EstudianteSchema = require('./Estudiante');
 const ClienteSchema = require('./Cliente');
 const GuestSchema = require('./Invitado');
 const CarreraSchema = require('./Carrera');
+const MessageSchema = require('./Mensaje');
 module.exports = {
     UsuarioSchema,
     EventoSchema,
@@ -21,5 +22,6 @@ module.exports = {
     EstudianteSchema,
     ClienteSchema,
     GuestSchema,
-    CarreraSchema
+    CarreraSchema,
+    MessageSchema,
 }

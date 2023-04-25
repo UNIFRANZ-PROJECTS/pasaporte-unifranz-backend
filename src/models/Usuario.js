@@ -46,6 +46,10 @@ const UsuarioSchema = Schema({
         type: Boolean,
         default: true
     },
+    isSuperUser: {
+        type: Boolean,
+        default: false
+    }
 });
 
 UsuarioSchema.method('toJSON', function () {
