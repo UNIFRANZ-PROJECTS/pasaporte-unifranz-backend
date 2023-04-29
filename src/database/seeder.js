@@ -76,7 +76,7 @@ mongoose.connection.on('connected', () => {
 
             await UsuarioSchema.findByIdAndUpdate(userCreated._id, updateUserObj, { new: true });
             //creando CATEGORIAS
-            // const listCategories = await CategoriaSchema.insertMany(categories(userCreated._id));
+            const listCategories = await CategoriaSchema.insertMany(categories(userCreated._id));
             //creando EXPOSITORES
             // const listGuests = await GuestSchema.insertMany(guests(userCreated._id));
             //creando EVENTOS
