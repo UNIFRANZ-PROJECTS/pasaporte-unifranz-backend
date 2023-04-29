@@ -76,11 +76,11 @@ mongoose.connection.on('connected', () => {
 
             await UsuarioSchema.findByIdAndUpdate(userCreated._id, updateUserObj, { new: true });
             //creando CATEGORIAS
-            const listCategories = await CategoriaSchema.insertMany(categories(userCreated._id));
+            // const listCategories = await CategoriaSchema.insertMany(categories(userCreated._id));
             //creando EXPOSITORES
-            const listGuests = await GuestSchema.insertMany(guests(userCreated._id));
+            // const listGuests = await GuestSchema.insertMany(guests(userCreated._id));
             //creando EVENTOS
-            const listEvents = await EventoSchema.insertMany(events(userCreated._id, listCategories, listGuests, listCareers))
+            // const listEvents = await EventoSchema.insertMany(events(userCreated._id, listCategories, listGuests, listCareers))
 
         })
         .catch(err => console.error(err))

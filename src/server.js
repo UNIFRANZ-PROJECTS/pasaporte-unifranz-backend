@@ -64,13 +64,13 @@ class Server {
         const publicPath = path.resolve(__dirname, './../public');
         this.app.use(express.static(publicPath));
         // this.app.use(express.static('./../public'));
-        this.app.use('/image', express.static(__dirname + './../assets'));
+        // this.app.use('/image', express.static(__dirname + './../assets'));
         // Fileupload - Carga de archivos
-        this.app.use(fileUpload({
-            useTempFiles: true,
-            tempFileDir: '/tmp/',
-            createParentPath: true
-        }));
+        // this.app.use(fileUpload({
+        //     useTempFiles: true,
+        //     tempFileDir: '/tmp/',
+        //     createParentPath: true
+        // }));
 
     }
 
