@@ -63,16 +63,7 @@ class Server {
         // Directorio Público
         const publicPath = path.resolve(__dirname, './../public');
         this.app.use(express.static(publicPath));
-        // this.app.use(express.static('./../public'));
         this.app.use('/image', express.static(__dirname + './../assets'));
-        this.app.use('/assets/assets/images', express.static(__dirname + './../public/assets/assets/images'));
-        // Fileupload - Carga de archivos
-        // this.app.use(fileUpload({
-        //     useTempFiles: true,
-        //     tempFileDir: '/tmp/',
-        //     createParentPath: true
-        // }));
-
     }
 
     routes() {
@@ -100,12 +91,6 @@ class Server {
             console.log('Servidor corriendo en puerto', this.port);
         });
     }
-    // listen() {
-    //     this.app.listen(this.port, () => {
-    //         console.log('Servidor corriendo en puerto', this.port);
-    //     });
-    // }
-
 }
 
 

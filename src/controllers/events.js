@@ -159,12 +159,16 @@ const getReportStudentsByEvent = async (req, res = response) => {
 const createEvent = async (req, res = response) => {
 
     const evento = new EventoSchema(req.body);
-
+    console.log(req.body.archivo)
     try {
+        const fs = require('fs');
         evento.user = req.uid;
         //agregar ubicación de la imagen
-        const { tempFilePath } = req.files.archivo
-        const { secure_url } = await cloudinary.uploader.upload(tempFilePath, { folder: 'events' });
+        // Convierte el archivo SVG en formato base64
+        const file = Buffer.from(req.body.archivo, 'base64');
+        fs.writeFileSync('/tmp/temp.jpg', file); // o /tmp/temp.png, dependiendo del formato
+        const { secure_url } = await cloudinary.uploader.upload('/tmp/temp.jpg', { folder: 'events' });
+
         //modificamos y damos acceso al usuario
         evento.image = secure_url;
 

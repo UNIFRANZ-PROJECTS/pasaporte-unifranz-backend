@@ -23,13 +23,13 @@ router.get('/report/student/:id', getReportStudentsByEvent);
 router.post(
     '/',
     [
-        validarArchivoSubir,
         check('title', 'El titulo es obligatorio').not().isEmpty(),
         check('description', 'La description es obligatoria').not().isEmpty(),
         check('careerIds', 'La lista de carreras es obligatoria').not().isEmpty(),
         check('categoryIds', 'La lista de categorias es obligatoria').not().isEmpty(),
         check('start', 'Fecha de inicio es obligatoria').custom(isDate),
         check('end', 'Fecha de finalización es obligatoria').custom(isDate),
+        check('archivo', 'El archivo es obligatorio').not().isEmpty(),
         validarCampos
     ],
     validarJWT,

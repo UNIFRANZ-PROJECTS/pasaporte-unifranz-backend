@@ -55,7 +55,6 @@ mongoose.connection.on('connected', () => {
                 name: 'moises',
                 email: 'moisic.mo@gmail.com',
                 password: 'moisic.mo@gmail.com',
-                img: `http://localhost:8001/image/businessman.png`,
                 type_user: typeUserCreated._id,
                 rol: rolCreated._id,
                 careerIds: idCarrers,
@@ -76,7 +75,7 @@ mongoose.connection.on('connected', () => {
 
             await UsuarioSchema.findByIdAndUpdate(userCreated._id, updateUserObj, { new: true });
             //creando CATEGORIAS
-            const listCategories = await CategoriaSchema.insertMany(categories(userCreated._id));
+            // const listCategories = await CategoriaSchema.insertMany(categories(userCreated._id));
             //creando EXPOSITORES
             // const listGuests = await GuestSchema.insertMany(guests(userCreated._id));
             //creando EVENTOS

@@ -44,6 +44,7 @@ const loginUsuario = async (req, res = response) => {
             ok: true,
             uid: usuario.id,
             name: usuario.name,
+            image: usuario.img,
             rol: usuario.rol.name,
             permisions: usuario.rol.permisionIds,
             type_user: usuario.type_user.name,

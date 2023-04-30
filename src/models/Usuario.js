@@ -16,6 +16,7 @@ const UsuarioSchema = Schema({
     },
     img: {
         type: String,
+        default: 'https://unifranz.site/image/images/person.png',
     },
     type_user: {
         type: Schema.Types.ObjectId,

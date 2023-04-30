@@ -18,11 +18,11 @@ router.get('/', getGuests);
 router.post(
     '/',
     [
-        validarArchivoSubir,
         check('first_name', 'El nombre es obligatorio').not().isEmpty(),
         check('last_name', 'El apellido es obligatorio').not().isEmpty(),
         check('description', 'La description es obligatoria').not().isEmpty(),
         check('specialty', 'La especialidad es obligatorio').not().isEmpty(),
+        check('archivo', 'El archivo es obligatorio').not().isEmpty(),
         validarCampos
     ],
     validarJWT,

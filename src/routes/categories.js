@@ -17,9 +17,9 @@ router.get('/:id', getCategory)
 router.post(
     '/',
     [
-        validarArchivoSubir,
         check('title', 'El titulo es obligatorio').not().isEmpty(),
         check("title").custom(categoryExists),
+        check('archivo', 'El archivo es obligatorio').not().isEmpty(),
         validarCampos
     ],
     validarJWT,
