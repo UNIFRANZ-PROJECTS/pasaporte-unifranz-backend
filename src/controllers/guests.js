@@ -25,7 +25,6 @@ const createGuest = async (req, res = response) => {
         const fs = require('fs');
         invitado.user = req.uid;
         //agregar ubicación de la imagen
-        // Convierte el archivo SVG en formato base64
         const file = Buffer.from(req.body.archivo, 'base64');
         fs.writeFileSync('/tmp/temp.jpg', file); // o /tmp/temp.png, dependiendo del formato
         const { secure_url } = await cloudinary.uploader.upload('/tmp/temp.jpg', { folder: 'guests' });

@@ -21,10 +21,6 @@ router.post(
 
 router.post(
     '/file',
-    [
-        validarArchivoSubir,
-        validarCampos
-    ],
     validarJWT,
     createStudents,
 );

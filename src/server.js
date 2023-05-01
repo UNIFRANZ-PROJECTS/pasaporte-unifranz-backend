@@ -50,6 +50,8 @@ class Server {
 
 
     middlewares() {
+
+        this.app.use(express.json({ limit: '50mb' }));
         this.app.use(function (req, res, next) {
             res.setHeader('Access-Control-Allow-Headers', 'x-token');
             next();

@@ -78,11 +78,14 @@ const authStudent = async (req, res = response) => {
 
 const createStudents = async (req, res = response) => {
 
-    // const user = new UsuarioSchema(req.body);
+
     try {
-        const { tempFilePath } = req.files.archivo
+        const fs = require('fs');
+        const file = Buffer.from(req.body.archivo, 'base64');
+        fs.writeFileSync('/tmp/temp.xlsx', file); // o /tmp/temp.png, dependiendo del formato
+
         await EstudianteSchema.deleteMany({})
-        workbook.xlsx.readFile(tempFilePath)
+        workbook.xlsx.readFile('/tmp/temp.xlsx')
             .then((value) => {
                 const worksheet = value.worksheets[0];
                 const rows = worksheet.getRows(2, worksheet.rowCount);
