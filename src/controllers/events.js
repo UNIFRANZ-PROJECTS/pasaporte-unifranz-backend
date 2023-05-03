@@ -1,10 +1,9 @@
 const { response } = require('express');
-const { EventoSchema, ClienteSchema, } = require('../models');
+const { EventoSchema, ClienteSchema, UsuarioSchema } = require('../models');
 const ExcelJS = require('exceljs');
 const mongoose = require('mongoose');
 const cloudinary = require('cloudinary').v2
 cloudinary.config(process.env.CLOUDINARY_URL);
-
 const getEvents = async (req, res = response) => {
 
     const eventos = await EventoSchema.find()
@@ -13,10 +12,40 @@ const getEvents = async (req, res = response) => {
         .populate('guestIds')
         .populate('careerIds')
         .sort({ start: 1 });
-    res.json({
+    return res.json({
         ok: true,
         eventos
     });
+}
+const getEventsAdmin = async (req, res = response) => {
+
+    console.log('usuario', req.uid);
+    const user = await UsuarioSchema.findById(req.uid).populate('careerIds')
+    if (user.isSuperUser) {
+        const eventos = await EventoSchema.find()
+            .populate('categoryIds')
+            .populate('studentIds')
+            .populate('guestIds')
+            .populate('careerIds')
+            .sort({ start: 1 });
+        return res.json({
+            ok: true,
+            eventos
+        });
+    } else {
+        const eventos = await EventoSchema.find({
+            careerIds: { $in: user.careerIds } // Busca los eventos donde el campo careerIds contiene alguno de los IDs especificados
+        })
+            .populate('categoryIds')
+            .populate('studentIds')
+            .populate('guestIds')
+            .populate('careerIds')
+            .sort({ start: 1 });
+        return res.json({
+            ok: true,
+            eventos
+        });
+    }
 }
 const getEventsByCampus = async (req, res = response) => {
     const eventos = await EventoSchema.find({ state: true })
@@ -96,18 +125,7 @@ const getEventsByCampus = async (req, res = response) => {
             });
     }
 }
-const getChatByEvent = async (req, res = response) => {
-    const evento = await EventoSchema.findById(req.params.id)
-        .populate({
-            path: 'messageIds',
-            populate: {
-                path: 'client'
-            },
-        });
-    res.json({
-        chat: evento.messageIds
-    })
-}
+
 const getReportStudentsByEvent = async (req, res = response) => {
 
     const eventoId = req.params.id
@@ -270,8 +288,8 @@ const deleteEvent = async (req, res = response) => {
 
 module.exports = {
     getEvents,
+    getEventsAdmin,
     getEventsByCampus,
-    getChatByEvent,
     getReportStudentsByEvent,
     createEvent,
     updateEvent,

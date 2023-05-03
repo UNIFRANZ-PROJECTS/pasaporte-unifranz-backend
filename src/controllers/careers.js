@@ -1,14 +1,22 @@
 const { response } = require('express');
-const { CarreraSchema } = require('../models');
+const { CarreraSchema, UsuarioSchema } = require('../models');
 
 const getCareers = async (req, res = response) => {
 
-    const carreras = await CarreraSchema.find({ state: true });
+    const user = await UsuarioSchema.findById(req.uid).populate('careerIds')
+    if (user.isSuperUser) {
+        const carreras = await CarreraSchema.find({ state: true });
+        return res.json({
+            ok: true,
+            carreras: carreras
+        });
+    } else {
+        return res.json({
+            ok: true,
+            carreras: user.careerIds
+        });
+    }
 
-    res.json({
-        ok: true,
-        carreras: carreras
-    });
 }
 const createCareer = async (req, res = response) => {
 

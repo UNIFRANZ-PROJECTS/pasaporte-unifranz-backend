@@ -7,21 +7,20 @@ const { check } = require('express-validator');
 
 const { isDate } = require('../helpers/isDate');
 const { validarJWT, validarCampos, validarArchivoSubir } = require('../middlewares');
-const { getEvents, getEventsByCampus, getChatByEvent, getReportStudentsByEvent, createEvent, updateEvent, deleteEvent } = require('../controllers/events');
+const { getEvents, getEventsAdmin, getEventsByCampus, getReportStudentsByEvent, createEvent, updateEvent, deleteEvent } = require('../controllers/events');
 
 const router = Router();
 
 // Obtener eventos 
 router.get('/', getEvents);
+router.get('/admin', validarJWT, getEventsAdmin);
 
 router.get('/campus/:id', getEventsByCampus);
-//get chat
-router.get('/messages/:id', getChatByEvent)
 //report students
-router.get('/report/student/:id', getReportStudentsByEvent);
+router.get('/admin/report/student/:id', validarJWT, getReportStudentsByEvent);
 // Crear un nuevo evento
 router.post(
-    '/',
+    '/admin',
     [
         check('title', 'El titulo es obligatorio').not().isEmpty(),
         check('description', 'La description es obligatoria').not().isEmpty(),
@@ -38,7 +37,8 @@ router.post(
 
 // Actualizar Evento
 router.put(
-    '/:id',
+    '/admin/:id',
+    validarJWT,
     updateEvent
 );
 
