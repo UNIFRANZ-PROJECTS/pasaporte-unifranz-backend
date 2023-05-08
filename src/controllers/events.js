@@ -177,8 +177,9 @@ const getReportStudentsByEvent = async (req, res = response) => {
 const createEvent = async (req, res = response) => {
 
     const evento = new EventoSchema(req.body);
-    console.log(req.body.archivo)
     try {
+        console.log(req.body.start)
+        console.log(req.body.end)
         const fs = require('fs');
         evento.user = req.uid;
         //agregar ubicación de la imagen
@@ -189,6 +190,8 @@ const createEvent = async (req, res = response) => {
 
         //modificamos y damos acceso al usuario
         evento.image = secure_url;
+        evento.start = new Date(req.body.start);
+        evento.end = new Date(req.body.end);
 
         const nuevoEvento = await evento.save();
         const eventoConReferencias = await EventoSchema.findById(nuevoEvento.id)
@@ -220,11 +223,13 @@ const updateEvent = async (req, res = response) => {
         const nuevoEvento = {
             ...req.body,
         }
-        if (req.files != null) {
+        if (req.body.archivo != null) {
+            const fs = require('fs');
 
             //agregar ubicación de la imagen
-            const { tempFilePath } = req.files.archivo
-            const { secure_url } = await cloudinary.uploader.upload(tempFilePath, { folder: 'events' });
+            const file = Buffer.from(req.body.archivo, 'base64');
+            fs.writeFileSync('/tmp/temp.jpg', file); // o /tmp/temp.png, dependiendo del formato
+            const { secure_url } = await cloudinary.uploader.upload('/tmp/temp.jpg', { folder: 'events' });
             //modificamos y damos acceso al usuario
             nuevoEvento.image = secure_url;
         }
