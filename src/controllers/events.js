@@ -1,5 +1,6 @@
 const { response } = require('express');
-const { EventoSchema, ClienteSchema, UsuarioSchema } = require('../models');
+const { EventoSchema, ClienteSchema, UsuarioSchema, EstudianteSchema } = require('../models');
+const { generarJWTstudent } = require('../helpers/jwt');
 const ExcelJS = require('exceljs');
 const mongoose = require('mongoose');
 const cloudinary = require('cloudinary').v2
@@ -102,27 +103,66 @@ const getEventsByCampus = async (req, res = response) => {
                 eventos: eventsc
             });
         default:
-            if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
-                return res.status(400).json({
-                    errors: [{ msg: "No existe el estudiante" }]
-                });
-            }
-            const cliente = await ClienteSchema.findById(req.params.id);
-            if (!cliente) {
-                return res.status(400).json({
-                    errors: [{ msg: "No existe el estudiante" }]
-                });
-            }
+            // if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+            //     return res.status(400).json({
+            //         errors: [{ msg: "No existe el estudiante" }]
+            //     });
+            // }
             const event = []
+            const cliente = await ClienteSchema.findOne({ codigo: req.params.id });
+            console.log(cliente)
+            if (cliente) {
+                eventos.forEach(e => {
+                    if (e.careerIds.filter((e) => e.campus == cliente.sede && e.abbreviation === cliente.carrera).length > 0) {
+                        event.push(e)
+                    }
+                });
+                const token = await generarJWTstudent(cliente.id, cliente.codigo);
+                return res.json({
+                    ok: true,
+                    uid: cliente.id,
+                    name: cliente.nombre,
+                    cliente: cliente,
+                    admin: false,
+                    token,
+                    eventos: event
+                })
+            }
+            const usuario = await EstudianteSchema.findOne({ codigo: req.params.id });
+
+            if (!usuario) {
+                return res.status(400).json({
+                    errors: [{ msg: "Lamentablemente no pudimos encontrarte" }]
+                });
+            }
+            // guardamos en la nueva tabla
+            const newCliente = new ClienteSchema();
+            newCliente.sede = usuario.sede;
+            newCliente.carrera = usuario.carrera;
+            newCliente.semestre = usuario.semestre;
+            newCliente.ci = usuario.ci;
+            newCliente.codigo = usuario.codigo;
+            newCliente.nombre = usuario.nombre;
+            newCliente.apellido = usuario.apellido;
+            newCliente.email = usuario.email;
+            await newCliente.save();
+            // Generar JWT
+            const token = await generarJWTstudent(newCliente.id, newCliente.codigo);
             eventos.forEach(e => {
-                if (e.careerIds.filter((e) => e.campus == cliente.sede && e.abbreviation === cliente.carrera).length > 0) {
+                if (e.careerIds.filter((e) => e.campus == newCliente.sede && e.abbreviation === newCliente.carrera).length > 0) {
                     event.push(e)
                 }
             });
             return res.json({
                 ok: true,
+                uid: newCliente.id,
+                name: newCliente.nombre,
+                cliente: newCliente,
+                admin: false,
+                token,
                 eventos: event
-            });
+            })
+
     }
 }
 
