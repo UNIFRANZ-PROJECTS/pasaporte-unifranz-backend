@@ -5,6 +5,7 @@ const ExcelJS = require('exceljs');
 const mongoose = require('mongoose');
 const cloudinary = require('cloudinary').v2
 cloudinary.config(process.env.CLOUDINARY_URL);
+const CryptoJS = require("crypto-js");
 const getEvents = async (req, res = response) => {
 
     const eventos = await EventoSchema.find()
