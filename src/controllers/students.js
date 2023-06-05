@@ -21,10 +21,21 @@ const getStudents = async (req, res = response) => {
 const authStudent = async (req, res = response) => {
     const { code } = req.body;
     try {
+        const event = [];
+        const eventos = await EventoSchema.find({ state: true })
+            .populate('categoryIds')
+            .populate('studentIds')
+            .populate('guestIds')
+            .populate('careerIds')
+            .sort({ start: 1 });
         const cliente = await ClienteSchema.findOne({ codigo: code });
 
         if (cliente) {
-
+            eventos.forEach(e => {
+                if (e.careerIds.filter((e) => e.campus == cliente.sede && e.abbreviation === cliente.carrera).length > 0) {
+                    event.push(e)
+                }
+            });
             const token = await generarJWTstudent(cliente.id, cliente.codigo);
             return res.json({
                 ok: true,
@@ -33,6 +44,7 @@ const authStudent = async (req, res = response) => {
                 cliente: cliente,
                 admin: false,
                 token,
+                eventos: event
             })
         }
 
@@ -56,6 +68,13 @@ const authStudent = async (req, res = response) => {
         await newCliente.save();
         // Generar JWT
         const token = await generarJWTstudent(newCliente.id, newCliente.codigo);
+
+        eventos.forEach(e => {
+            if (e.careerIds.filter((e) => e.campus == newCliente.sede && e.abbreviation === newCliente.carrera).length > 0) {
+                event.push(e)
+            }
+        });
+
         return res.json({
             ok: true,
             uid: newCliente.id,
@@ -63,6 +82,7 @@ const authStudent = async (req, res = response) => {
             cliente: newCliente,
             admin: false,
             token,
+            eventos: event
         })
 
 
