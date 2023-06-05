@@ -103,14 +103,19 @@ const getEventsByCampus = async (req, res = response) => {
                 eventos: eventsc
             });
         default:
-            // if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
-            //     return res.status(400).json({
-            //         errors: [{ msg: "No existe el estudiante" }]
-            //     });
-            // }
+            //decifrar
+            // Define la clave de encriptación y el vector de inicialización (IV)
+            var claveEncriptacion = CryptoJS.enc.Utf8.parse(process.env.CLAVEENCRYPT);
+            var iv = CryptoJS.enc.Utf8.parse(process.env.VECTOR);
+
+            // Desencripta el documento
+            var CIDesencriptado = CryptoJS.AES.decrypt(req.params.id, claveEncriptacion, { iv: iv }).toString(CryptoJS.enc.Utf8);
+
+            // Utiliza el ci desencriptado
+            console.log(CIDesencriptado);
+
             const event = []
-            const cliente = await ClienteSchema.findOne({ codigo: req.params.id });
-            console.log(cliente)
+            const cliente = await ClienteSchema.findOne({ codigo: CIDesencriptado });
             if (cliente) {
                 eventos.forEach(e => {
                     if (e.careerIds.filter((e) => e.campus == cliente.sede && e.abbreviation === cliente.carrera).length > 0) {
@@ -128,7 +133,7 @@ const getEventsByCampus = async (req, res = response) => {
                     eventos: event
                 })
             }
-            const usuario = await EstudianteSchema.findOne({ codigo: req.params.id });
+            const usuario = await EstudianteSchema.findOne({ codigo: CIDesencriptado });
 
             if (!usuario) {
                 return res.status(400).json({
