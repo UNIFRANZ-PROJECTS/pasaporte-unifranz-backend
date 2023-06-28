@@ -1,10 +1,10 @@
 const { response } = require('express');
-const { EventoSchema, UsuarioSchema } = require('../models');
+const { EventoSchema, UsuarioSchema, ClienteSchema } = require('../models');
 
 
 
 const getDashboard = async (req, res = response) => {
-
+    let clientes = await ClienteSchema.find();
     let usuario = await UsuarioSchema.findById(req.uid)
         .populate('rol', 'name')
         .populate('type_user', 'name')
@@ -92,7 +92,7 @@ const getDashboard = async (req, res = response) => {
             presencial,
         ],
         carrers: resultado,
-
+        countStudents: clientes.length
     });
 }
 

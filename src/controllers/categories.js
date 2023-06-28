@@ -5,16 +5,20 @@ const { CategoriaSchema } = require('../models');
 const cloudinary = require('cloudinary').v2
 cloudinary.config(process.env.CLOUDINARY_URL);
 
+
+
+
 const getCategories = async (req, res = response) => {
 
     const categorias = await CategoriaSchema.find();
-    // .populate('user', 'name');
-
     res.json({
         ok: true,
         categorias
     });
 }
+
+
+
 
 const getCategory = async (req, res = response) => {
 

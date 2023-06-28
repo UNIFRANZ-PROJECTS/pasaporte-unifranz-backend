@@ -25,11 +25,6 @@ router.post(
 );
 router.put(
     '/:id',
-    [
-        check('email', 'El email es obligatorio').isEmail(),
-        check("email").custom(emailExists),
-        validarCampos
-    ],
     updateUser
 );
 router.put(

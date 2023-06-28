@@ -56,6 +56,11 @@ const UsuarioSchema = Schema({
 UsuarioSchema.method('toJSON', function () {
     const { __v, _id, ...object } = this.toObject();
     object.id = _id;
+    object.careerIds.forEach(e => {
+        e.id = e._id;
+        delete e._id;
+        delete e.__v;
+    });
     return object;
 });
 

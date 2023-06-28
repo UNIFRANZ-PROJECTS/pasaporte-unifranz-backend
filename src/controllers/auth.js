@@ -49,7 +49,9 @@ const loginUsuario = async (req, res = response) => {
             permisions: usuario.rol.permisionIds,
             type_user: usuario.type_user.name,
             careerIds: usuario.careerIds,
-            token
+            token,
+            isSuperUser: usuario.isSuperUser
+
         })
 
 

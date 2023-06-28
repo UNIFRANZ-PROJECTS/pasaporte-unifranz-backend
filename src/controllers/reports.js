@@ -26,6 +26,9 @@ const getReportByFilter = async (req, res = response) => {
     if (body.modality != null) {
         query.modality = { $in: body.modality };
     }
+
+    console.log('query')
+    console.log(query)
     const eventos = await EventoSchema.find(query)
         .populate('categoryIds')
         .populate('studentIds')
