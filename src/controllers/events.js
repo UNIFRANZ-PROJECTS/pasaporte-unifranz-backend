@@ -279,6 +279,9 @@ const updateEvent = async (req, res = response) => {
             //modificamos y damos acceso al usuario
             nuevoEvento.image = secure_url;
         }
+
+        nuevoEvento.start = new Date(req.body.start);
+        nuevoEvento.end = new Date(req.body.end);
         console.log(nuevoEvento)
         const eventoActualizado = await EventoSchema.findByIdAndUpdate(eventoId, nuevoEvento, { new: true },);
         const eventoConReferencias = await EventoSchema.findById(eventoActualizado.id)
